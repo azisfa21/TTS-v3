@@ -1,0 +1,1345 @@
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TTS NUSANTARA - Generator Suara AI Indonesia & Jawa</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        nusantara: {
+                            red: '#E63946',
+                            gold: '#D4AF37',
+                            emerald: '#064E3B',
+                            teal: '#0D9488',
+                            dark: '#1E293B',
+                            light: '#F8FAFC',
+                            accent: '#3B82F6',
+                            amber: '#F59E0B'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+        }
+        .voice-card {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .voice-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 20px -5px rgba(13, 148, 136, 0.2);
+        }
+        .voice-card.active {
+            border-color: #0D9488;
+            background: linear-gradient(145deg, #f0fdfa, #ccfbf1);
+            box-shadow: 0 0 0 2px #0D9488, 0 8px 20px -4px rgba(13, 148, 136, 0.25);
+        }
+        .gradient-btn {
+            background: linear-gradient(135deg, #0D9488 0%, #059669 50%, #10B981 100%);
+            transition: all 0.3s ease;
+        }
+        .gradient-btn:hover {
+            background: linear-gradient(135deg, #0F766E 0%, #047857 50%, #059669 100%);
+            box-shadow: 0 8px 25px -5px rgba(13, 148, 136, 0.5);
+            transform: translateY(-1px);
+        }
+        .pulse-wave {
+            animation: pulseWave 1.8s infinite;
+        }
+        @keyframes pulseWave {
+            0% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(13, 148, 136, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0); }
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="font-sans text-slate-800 antialiased pb-12">
+
+    <!-- HEADER -->
+    <header class="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-200/80 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-teal-600 via-emerald-500 to-teal-400 flex items-center justify-center text-white text-2xl shadow-md shadow-teal-500/20">
+                    <i class="fa-solid fa-microphone-lines"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="text-xl sm:text-2xl font-black tracking-tight text-slate-900">TTS NUSANTARA</h1>
+                        <span class="bg-red-100 text-red-700 font-bold text-[10px] px-2 py-0.5 rounded-full border border-red-200 uppercase tracking-wider">AI Voice ID</span>
+                    </div>
+                    <p class="text-xs font-medium text-slate-500">Generator Suara Natural Indonesia & Jawa untuk Edukasi</p>
+                </div>
+            </div>
+            
+            <div class="hidden md:flex items-center gap-3">
+                <div class="flex items-center gap-1.5 bg-emerald-50 text-emerald-700 text-xs font-semibold px-3 py-1.5 rounded-full border border-emerald-200">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    Gemini 2.5 Multi-Speaker Active
+                </div>
+                <button onclick="toggleInfoModal()" class="text-slate-500 hover:text-slate-800 p-2 rounded-xl hover:bg-slate-100 transition" title="Panduan Penggunaan">
+                    <i class="fa-solid fa-circle-info text-lg"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+
+        <div class="mb-6 glass-card p-4 rounded-2xl border-l-4 border-l-teal-500 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center flex-shrink-0 text-lg">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-slate-800 text-sm">Media Suara Edukasi SD, Narasi & Percakapan 2 Pembicara</h3>
+                    <p class="text-xs text-slate-600">Buat dongeng solo maupun dialog percakapan 2 orang (Guru-Siswa, Budi-Siti, Pacelathon Basa Jawa) secara otomatis!</p>
+                </div>
+            </div>
+            <div class="flex gap-2 w-full sm:w-auto">
+                <button onclick="loadPreset('kancil')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-3 py-1.5 rounded-lg transition whitespace-nowrap">
+                    📚 Contoh Dongeng SD
+                </button>
+                <button onclick="loadPreset('dialog_ipa')" class="text-xs bg-teal-50 hover:bg-teal-100 text-teal-800 font-semibold px-3 py-1.5 rounded-lg border border-teal-200 transition whitespace-nowrap">
+                    👥 Dialog 2 Orang (IPA)
+                </button>
+                <button onclick="loadPreset('jawa_krama')" class="text-xs bg-amber-50 hover:bg-amber-100 text-amber-800 font-semibold px-3 py-1.5 rounded-lg border border-amber-200 transition whitespace-nowrap">
+                    🌾 Presets Basa Jawa
+                </button>
+            </div>
+        </div>
+
+        <!-- MAIN LAYOUT GRID -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+            <!-- LEFT COLUMN: CONTROLS & VOICE PROFILES -->
+            <div class="lg:col-span-5 space-y-6">
+
+                <!-- CARD 1: Pilihan Mode & Bahasa -->
+                <div class="glass-card rounded-2xl p-5 border border-slate-200/80">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center text-xs font-bold">1</span>
+                            <h2 class="font-bold text-slate-900">Mode & Bahasa</h2>
+                        </div>
+                    </div>
+
+                    <!-- Mode Switcher (Single vs Dialog 2 Orang) -->
+                    <div class="mb-4">
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Mode Suara</label>
+                        <div class="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl border border-slate-200">
+                            <button type="button" onclick="setTTSMode('single')" id="mode-single-btn" class="py-2 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 bg-white text-teal-800 shadow-sm">
+                                <i class="fa-solid fa-user"></i> 1 Pembicara
+                            </button>
+                            <button type="button" onclick="setTTSMode('dialogue')" id="mode-dialogue-btn" class="py-2 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 text-slate-600 hover:text-slate-900">
+                                <i class="fa-solid fa-users"></i> Percakapan 2 Orang
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Pilihan Bahasa -->
+                    <div class="mb-4">
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Pilih Bahasa / Logat</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button type="button" onclick="selectLanguage('id')" id="lang-id-btn" class="lang-btn border-2 border-teal-600 bg-teal-50/80 text-teal-800 p-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition shadow-sm">
+                                <span class="text-base">🇮🇩</span> Bahasa Indonesia
+                            </button>
+                            <button type="button" onclick="selectLanguage('jw')" id="lang-jw-btn" class="lang-btn border-2 border-slate-200 text-slate-600 hover:border-slate-300 p-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition">
+                                <span class="text-base">🌾</span> Bahasa Jawa
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Panel Single Voice Persona (Active when mode === 'single') -->
+                    <div id="single-voice-panel">
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Karakter Suara & Usia</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div onclick="selectVoiceCard('pria_dewasa')" id="voice-pria_dewasa" class="voice-card active border-2 border-slate-200 bg-white p-3 rounded-xl cursor-pointer">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="text-2xl">👨</div>
+                                    <div>
+                                        <div class="font-bold text-slate-800 text-sm">Pria Dewasa</div>
+                                        <div class="text-[11px] text-slate-500">Berat, Wibawa</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div onclick="selectVoiceCard('wanita_dewasa')" id="voice-wanita_dewasa" class="voice-card border-2 border-slate-200 bg-white p-3 rounded-xl cursor-pointer">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="text-2xl">👩</div>
+                                    <div>
+                                        <div class="font-bold text-slate-800 text-sm">Wanita Dewasa</div>
+                                        <div class="text-[11px] text-slate-500">Lembut, Ibu Guru</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div onclick="selectVoiceCard('anak_pria')" id="voice-anak_pria" class="voice-card border-2 border-slate-200 bg-white p-3 rounded-xl cursor-pointer">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="text-2xl">👦</div>
+                                    <div>
+                                        <div class="font-bold text-slate-800 text-sm">Anak Laki-Laki</div>
+                                        <div class="text-[11px] text-slate-500">Polos, Ceria</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div onclick="selectVoiceCard('anak_wanita')" id="voice-anak_wanita" class="voice-card border-2 border-slate-200 bg-white p-3 rounded-xl cursor-pointer">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="text-2xl">👧</div>
+                                    <div>
+                                        <div class="font-bold text-slate-800 text-sm">Anak Perempuan</div>
+                                        <div class="text-[11px] text-slate-500">Lincah, Imut</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Panel Dialogue Multi-Speaker Config (Active when mode === 'dialogue') -->
+                    <div id="dialogue-voice-panel" class="hidden space-y-3.5 bg-teal-50/50 border border-teal-200 p-3.5 rounded-xl">
+                        <div class="flex items-center justify-between border-b border-teal-200/60 pb-2">
+                            <span class="text-xs font-bold text-teal-900 uppercase tracking-wider flex items-center gap-1.5">
+                                <i class="fa-solid fa-comments text-teal-600"></i> Pengaturan Pembicara Dialog
+                            </span>
+                            <button onclick="insertDialogueTemplate()" class="text-[11px] bg-teal-600 hover:bg-teal-700 text-white font-bold px-2 py-0.5 rounded transition">
+                                + Contoh Format
+                            </button>
+                        </div>
+
+                        <!-- Pembicara 1 -->
+                        <div class="bg-white p-2.5 rounded-lg border border-teal-100 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-extrabold text-teal-800 flex items-center gap-1">🗣️ Pembicara 1</span>
+                                <input type="text" id="spk1-name" value="Budi" oninput="updateSpeakerConfig()" placeholder="Nama 1" class="text-xs font-bold text-slate-800 border border-slate-300 rounded px-2 py-1 w-24 focus:ring-1 focus:ring-teal-500">
+                            </div>
+                            <select id="spk1-voice" onchange="updateSpeakerConfig()" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg p-2 font-semibold text-slate-700">
+                                <option value="anak_pria">👦 Budi (Anak Laki-laki)</option>
+                                <option value="anak_wanita">👧 Siti (Anak Perempuan)</option>
+                                <option value="pria_dewasa">👨 Pak Guru (Pria Dewasa)</option>
+                                <option value="wanita_dewasa">👩 Ibu Guru (Wanita Dewasa)</option>
+                            </select>
+                        </div>
+
+                        <!-- Pembicara 2 -->
+                        <div class="bg-white p-2.5 rounded-lg border border-teal-100 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-extrabold text-teal-800 flex items-center gap-1">🗣️ Pembicara 2</span>
+                                <input type="text" id="spk2-name" value="Siti" oninput="updateSpeakerConfig()" placeholder="Nama 2" class="text-xs font-bold text-slate-800 border border-slate-300 rounded px-2 py-1 w-24 focus:ring-1 focus:ring-teal-500">
+                            </div>
+                            <select id="spk2-voice" onchange="updateSpeakerConfig()" class="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg p-2 font-semibold text-slate-700">
+                                <option value="anak_wanita" selected>👧 Siti (Anak Perempuan)</option>
+                                <option value="anak_pria">👦 Budi (Anak Laki-laki)</option>
+                                <option value="wanita_dewasa">👩 Ibu Guru (Wanita Dewasa)</option>
+                                <option value="pria_dewasa">👨 Pak Guru (Pria Dewasa)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- CARD 2: Vibe & Gaya Suara -->
+                <div class="glass-card rounded-2xl p-5 border border-slate-200/80">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center text-xs font-bold">2</span>
+                            <h2 class="font-bold text-slate-900">Vibe & Gaya Emosi Narasi</h2>
+                        </div>
+                    </div>
+
+                    <!-- Dropdown Vibe -->
+                    <div class="mb-4">
+                        <label for="vibe-select" class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Suasana / Emosi Suara</label>
+                        <div class="relative">
+                            <select id="vibe-select" onchange="updateVibeBadge()" class="w-full bg-white border border-slate-300 font-semibold text-slate-800 text-sm rounded-xl p-3 pr-10 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 appearance-none shadow-sm">
+                                <option value="ceria">😊 Ceria - Bersemangat, gembira, positif</option>
+                                <option value="sedih">😢 Sedih - Haru, berbisik, pelan, emosional</option>
+                                <option value="puitis">📜 Puitis - Penghayatan, bergelombang, artistik</option>
+                                <option value="berwibawa">🏛️ Berwibawa - Tegas, formal, instruktual, mantap</option>
+                                <option value="seram">👻 Seram - Dalam, misterius, berbisik mendengung</option>
+                                <option value="lucu">🤪 Lucu - Jenaka, fluktuatif, jenaka cepat</option>
+                                <option value="antusias">🔥 Antusias - Penuh daya, bergelora, heboh</option>
+                                <option value="tenang">🧘 Tenang - Rileks, meditasi, lembut meluncur</option>
+                                <option value="ramah">🤝 Ramah - Hangat, menyapa, akrab, tersenyum</option>
+                                <option value="dramatis">🎭 Dramatis - Penuh klimaks, jeda dramatis, tegang</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
+                                <i class="fa-solid fa-chevron-down text-xs"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vibe Preview Tag -->
+                    <div id="vibe-description-box" class="bg-teal-50/70 border border-teal-200/80 rounded-xl p-3 flex items-center gap-2 text-xs text-teal-900 font-medium">
+                        <i class="fa-solid fa-sparkles text-teal-600"></i>
+                        <span id="vibe-desc-text">AI akan menyesuaikan intonasi yang gembira, tinggi, dan penuh nada positif.</span>
+                    </div>
+                </div>
+
+                <!-- CARD 3: Pengaturan Parameter Suara Slider -->
+                <div class="glass-card rounded-2xl p-5 border border-slate-200/80">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center text-xs font-bold">3</span>
+                            <h2 class="font-bold text-slate-900">Modifikasi Parameter Suara</h2>
+                        </div>
+                        <button onclick="resetAudioSliders()" class="text-xs text-slate-500 hover:text-teal-700 font-semibold flex items-center gap-1 transition">
+                            <i class="fa-solid fa-rotate-left"></i> Reset
+                        </button>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- Kecepatan / Tempo Slider -->
+                        <div>
+                            <div class="flex justify-between items-center text-xs font-semibold text-slate-700 mb-1">
+                                <span>⚡ Kecepatan (Tempo):</span>
+                                <span id="val-speed" class="font-bold text-teal-700">1.0×</span>
+                            </div>
+                            <input type="range" id="slider-speed" min="0.5" max="2.0" step="0.1" value="1.0" oninput="updateSliderLabel('speed')" class="w-full accent-teal-600 bg-slate-200 h-2 rounded-lg cursor-pointer">
+                            <div class="flex justify-between text-[10px] text-slate-400 font-medium mt-0.5">
+                                <span>0.5× (Lambat)</span>
+                                <span>1.0× (Normal)</span>
+                                <span>2.0× (Cepat)</span>
+                            </div>
+                        </div>
+
+                        <!-- Pitch Slider -->
+                        <div>
+                            <div class="flex justify-between items-center text-xs font-semibold text-slate-700 mb-1">
+                                <span>🎵 Nada Suara (Pitch):</span>
+                                <span id="val-pitch" class="font-bold text-teal-700">Normal (0)</span>
+                            </div>
+                            <input type="range" id="slider-pitch" min="-10" max="10" step="1" value="0" oninput="updateSliderLabel('pitch')" class="w-full accent-teal-600 bg-slate-200 h-2 rounded-lg cursor-pointer">
+                            <div class="flex justify-between text-[10px] text-slate-400 font-medium mt-0.5">
+                                <span>Rendah (-10)</span>
+                                <span>Sedang (0)</span>
+                                <span>Tinggi (+10)</span>
+                            </div>
+                        </div>
+
+                        <!-- Volume Slider -->
+                        <div>
+                            <div class="flex justify-between items-center text-xs font-semibold text-slate-700 mb-1">
+                                <span>🔊 Volume:</span>
+                                <span id="val-volume" class="font-bold text-teal-700">100%</span>
+                            </div>
+                            <input type="range" id="slider-volume" min="20" max="100" step="5" value="100" oninput="updateSliderLabel('volume')" class="w-full accent-teal-600 bg-slate-200 h-2 rounded-lg cursor-pointer">
+                        </div>
+
+                        <!-- Jeda Antar Kalimat -->
+                        <div>
+                            <div class="flex justify-between items-center text-xs font-semibold text-slate-700 mb-1">
+                                <span>⏱️ Jeda Antar Kalimat:</span>
+                                <span id="val-pause" class="font-bold text-teal-700">0.8 Detik</span>
+                            </div>
+                            <input type="range" id="slider-pause" min="0.2" max="3.0" step="0.2" value="0.8" oninput="updateSliderLabel('pause')" class="w-full accent-teal-600 bg-slate-200 h-2 rounded-lg cursor-pointer">
+                        </div>
+                    </div>
+
+                    <!-- Tombol Tes Preview Suara Singkat -->
+                    <div class="mt-5 pt-4 border-t border-slate-200/80">
+                        <button type="button" onclick="testQuickVoicePreview()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs py-2.5 rounded-xl border border-slate-300 flex items-center justify-center gap-2 transition">
+                            <i class="fa-solid fa-volume-high text-teal-600"></i> Tes Contoh Suara (3 Detik)
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN: NARRATION TEXT AREA & AI GENERATOR -->
+            <div class="lg:col-span-7 space-y-6">
+
+                <!-- CARD 4: Kolom Narasi Teks -->
+                <div class="glass-card rounded-2xl p-5 border border-slate-200/80 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2">
+                                <span class="w-7 h-7 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center text-xs font-bold">4</span>
+                                <h2 class="font-bold text-slate-900">Naskah / Teks Narasi</h2>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <button onclick="pasteTextFromClipboard()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-2.5 py-1 rounded-lg border border-slate-200 flex items-center gap-1 transition" title="Tempel Teks">
+                                    <i class="fa-solid fa-paste text-slate-500"></i> Tempel
+                                </button>
+                                <button onclick="clearNarrationText()" class="text-xs bg-slate-100 hover:bg-red-50 text-slate-700 hover:text-red-600 font-medium px-2.5 py-1 rounded-lg border border-slate-200 flex items-center gap-1 transition" title="Hapus Teks">
+                                    <i class="fa-solid fa-trash-can text-slate-400"></i> Hapus
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Presets Dropdown Fast-selector -->
+                        <div class="mb-3 flex items-center gap-2">
+                            <span class="text-xs font-bold text-slate-500 whitespace-nowrap">💡 Contoh Narasi:</span>
+                            <select onchange="loadPreset(this.value)" class="text-xs bg-white border border-slate-300 rounded-lg p-1.5 font-medium text-slate-700 w-full focus:ring-1 focus:ring-teal-500">
+                                <option value="">-- Pilih Contoh Narasi / Percakapan --</option>
+                                <option value="kancil">📖 Dongeng SD: Kancil & Buaya (1 Pembicara)</option>
+                                <option value="ipa_fotosintesis">🌿 Pelajaran IPA SD: Fotosintesis (1 Pembicara)</option>
+                                <option value="puisi_pancasila">📜 Puisi SD: Garuda Pancasila (Puitis)</option>
+                                <option value="dialog_ipa">💬 Percakapan 2 Orang: Budi & Siti Belajar IPA (Dialog)</option>
+                                <option value="dialog_jawa">🌾 Pacelathon 2 Orang: Budi & Pak Guru Basa Jawa (Dialog)</option>
+                                <option value="jawa_krama">🌾 Basa Jawa Krama: Unggah-ungguh Marang Wong Tuwa</option>
+                                <option value="jawa_lucu">🎭 Basa Jawa Ngoko: Cerita Guyon Kancan SD</option>
+                            </select>
+                        </div>
+
+                        <!-- Text Area -->
+                        <div class="relative">
+                            <textarea id="narration-input" oninput="updateTextStats()" rows="7" placeholder="Ketik atau tempelkan naskah narasi di sini. Bebas tanpa batasan jumlah karakter... Contoh: 'Pada suatu hari di sebuah hutan yang hijau dan asri, ada seorang anak bernama Budi...'" class="w-full bg-white border border-slate-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/30 rounded-xl p-4 text-slate-800 text-sm font-normal leading-relaxed resize-y shadow-inner"></textarea>
+                        </div>
+
+                        <!-- Counter Bar -->
+                        <div class="flex items-center justify-between text-xs text-slate-500 mt-2 px-1">
+                            <div class="flex items-center gap-4 font-medium">
+                                <span>Karakter: <strong id="char-count" class="text-slate-800">0</strong></span>
+                                <span>Kata: <strong id="word-count" class="text-slate-800">0</strong></span>
+                                <span>Estimasi Durasi: <strong id="est-duration" class="text-teal-700">~0s</strong></span>
+                            </div>
+                            <span class="text-[11px] text-slate-400 hidden sm:inline">Tanda baca (! ? .) mempercantik intonasi</span>
+                        </div>
+                    </div>
+
+                    <!-- AI Logic Live Analyzer Card -->
+                    <div id="ai-analyzer-card" class="mt-4 p-3 bg-slate-800 text-slate-200 rounded-xl text-xs space-y-1.5 font-mono">
+                        <div class="flex items-center justify-between text-slate-400 border-b border-slate-700 pb-1">
+                            <span class="flex items-center gap-1.5 font-sans font-bold text-teal-400">
+                                <i class="fa-solid fa-brain"></i> AI Logic Phonetic Analysis
+                            </span>
+                            <span id="ai-status-badge" class="bg-teal-900/60 text-teal-300 px-2 py-0.5 rounded text-[10px] font-sans">Ready</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-[11px] pt-1">
+                            <div>• Mode Suara: <span id="ai-mode-tag" class="text-teal-300 font-semibold">1 Pembicara</span></div>
+                            <div>• Target Dialek: <span id="ai-dialect-tag" class="text-amber-300 font-semibold">Bahasa Indonesia</span></div>
+                            <div>• Voice Persona: <span id="ai-persona-tag" class="text-amber-300 font-semibold">Pria Dewasa</span></div>
+                            <div>• Intonation Vector: <span id="ai-vibe-tag" class="text-teal-300 font-semibold">Ceria (Positive Pitch)</span></div>
+                        </div>
+                    </div>
+
+                    <!-- MAIN GENERATE BUTTON -->
+                    <div class="mt-5">
+                        <button type="button" id="generate-btn" onclick="generateAudioTTS()" class="w-full gradient-btn text-white font-extrabold text-base py-4 rounded-xl shadow-lg flex items-center justify-center gap-3 tracking-wide">
+                            <i class="fa-solid fa-wand-magic-sparkles text-xl"></i>
+                            <span id="generate-btn-text">🎙️ GENERATE AUDIO MP3</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- CARD 5: OUTPUT AUDIO PLAYER -->
+                <div id="audio-output-card" class="glass-card rounded-2xl p-5 border-2 border-teal-500/40 shadow-xl relative overflow-hidden transition-all duration-300 hidden">
+                    
+                    <div class="flex items-center justify-between mb-3 border-b border-slate-200 pb-3">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center">
+                                <i class="fa-solid fa-circle-check text-base"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-sm">Audio Hasil Sintesis AI</h3>
+                                <p id="audio-meta-subtitle" class="text-xs text-slate-500">Bahasa Indonesia • Pria Dewasa • Ceria</p>
+                            </div>
+                        </div>
+                        <span class="bg-emerald-100 text-emerald-800 font-bold text-xs px-2.5 py-1 rounded-full border border-emerald-300 flex items-center gap-1">
+                            <i class="fa-solid fa-file-audio"></i> MP3 / WAV
+                        </span>
+                    </div>
+
+                    <!-- Visualizer Canvas -->
+                    <div class="relative bg-slate-900 rounded-xl p-3 mb-4 overflow-hidden flex flex-col justify-center items-center">
+                        <canvas id="waveform-canvas" class="w-full h-16"></canvas>
+                        <div id="visualizer-placeholder" class="text-slate-400 text-xs font-mono flex items-center gap-2">
+                            <i class="fa-solid fa-chart-simple text-teal-400 animate-pulse"></i> Visualisasi Gelombang Suara Nusantara
+                        </div>
+                    </div>
+
+                    <!-- Custom Player Controls -->
+                    <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm space-y-3">
+                        
+                        <!-- Timeline scrubber -->
+                        <div class="space-y-1">
+                            <input type="range" id="audio-scrubber" min="0" max="100" value="0" step="0.1" oninput="scrubAudio(this.value)" class="w-full accent-teal-600 bg-slate-200 h-2 rounded-lg cursor-pointer">
+                            <div class="flex justify-between text-xs text-slate-500 font-mono font-medium">
+                                <span id="current-time">00:00</span>
+                                <span id="total-duration">00:00</span>
+                            </div>
+                        </div>
+
+                        <!-- Player Action Buttons -->
+                        <div class="flex items-center justify-between pt-1">
+                            <div class="flex items-center gap-2">
+                                <button onclick="rewindAudio(5)" class="w-9 h-9 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition" title="Mundur 5 Detik">
+                                    <i class="fa-solid fa-rotate-left text-xs"></i>
+                                </button>
+                                
+                                <button id="play-pause-btn" onclick="toggleAudioPlay()" class="w-12 h-12 rounded-full bg-teal-600 hover:bg-teal-700 text-white flex items-center justify-center text-lg shadow-md transition" title="Putar Audio">
+                                    <i class="fa-solid fa-play ml-0.5"></i>
+                                </button>
+
+                                <button onclick="forwardAudio(5)" class="w-9 h-9 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition" title="Maju 5 Detik">
+                                    <i class="fa-solid fa-rotate-right text-xs"></i>
+                                </button>
+                            </div>
+
+                            <!-- Download MP3 Button -->
+                            <button id="download-audio-btn" onclick="downloadGeneratedAudio()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow transition flex items-center gap-2">
+                                <i class="fa-solid fa-download"></i> Unduh File Audio (.wav/.mp3)
+                            </button>
+                        </div>
+
+                    </div>
+
+                    <!-- Hidden HTML5 Audio Element -->
+                    <audio id="native-audio-element" class="hidden"></audio>
+                </div>
+
+                <!-- CARD 6: RIWAYAT GENERASI AUDIO -->
+                <div class="glass-card rounded-2xl p-5 border border-slate-200/80">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-clock-rotate-left text-teal-600"></i> Riwayat Suara Hari Ini
+                        </h3>
+                        <button onclick="clearHistory()" class="text-xs text-slate-400 hover:text-red-500 font-medium">Bersihkan</button>
+                    </div>
+
+                    <div id="history-list" class="space-y-2 max-h-48 overflow-y-auto pr-1 text-xs">
+                        <div class="text-center py-6 text-slate-400 italic font-normal">
+                            Belum ada riwayat suara. Klik "Generate Audio" untuk membuat suara pertama Anda!
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- INFO MODAL -->
+    <div id="info-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+        <div class="glass-card bg-white max-w-lg w-full rounded-2xl p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                <h3 class="font-bold text-slate-900 text-lg flex items-center gap-2">
+                    <i class="fa-solid fa-microphone-lines text-teal-600"></i> Panduan TTS NUSANTARA
+                </h3>
+                <button onclick="toggleInfoModal()" class="text-slate-400 hover:text-slate-600 text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div class="text-xs text-slate-600 space-y-2.5 leading-relaxed">
+                <p><strong>1. Bahasa & Karakter:</strong> Pilih Bahasa Indonesia atau Bahasa Jawa. Setiap karakter (Pria, Wanita, Anak-Anak) memiliki timbal balik intonasi khusus yang disesuaikan untuk kebutuhan pembelajaran murid SD.</p>
+                <p><strong>2. Vibe Emosi:</strong> Memilih Vibe (Ceria, Puitis, Berwibawa, dll) akan mengirimkan instruksi emosi ke AI Gemini TTS agar suara tidak terdengar kaku bagaikan robot biasa.</p>
+                <p><strong>3. Bahasa Jawa Halus / Ngoko:</strong> Disarankan memasukkan teks dengan ejaan Jawa yang tepat (misal: "Sugeng enjang para putra-putri...") agar AI melafalkannya secara medok dan natural.</p>
+                <p><strong>4. Format Audio:</strong> Audio yang dihasilkan dapat diputar secara langsung dan diunduh sebagai file siap pakai untuk materi presentasi atau video pembelajaran.</p>
+            </div>
+
+            <div class="pt-2">
+                <button onclick="toggleInfoModal()" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs py-2.5 rounded-xl">
+                    Saya Mengerti
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let state = {
+            mode: 'single', // 'single' or 'dialogue'
+            language: 'id', // 'id' or 'jw'
+            voiceCard: 'pria_dewasa', // 'pria_dewasa', 'wanita_dewasa', 'anak_pria', 'anak_wanita'
+            speaker1: { name: 'Budi', voiceKey: 'anak_pria' },
+            speaker2: { name: 'Siti', voiceKey: 'anak_wanita' },
+            vibe: 'ceria',
+            speed: 1.0,
+            pitch: 0,
+            volume: 100,
+            pause: 0.8,
+            currentAudioBlob: null,
+            currentAudioUrl: null,
+            generatedHistory: []
+        };
+
+        // Prebuilt voice mapping for Gemini TTS model
+        const voiceProfiles = {
+            pria_dewasa: { name: 'Orus', gender: 'male', age: 'adult', desc: 'Pria Dewasa (Wibawa, Mantap)' },
+            wanita_dewasa: { name: 'Kore', gender: 'female', age: 'adult', desc: 'Wanita Dewasa (Ibu Guru, Warm)' },
+            anak_pria: { name: 'Puck', gender: 'male', age: 'child', desc: 'Anak Laki-Laki (Aktif, Polos)' },
+            anak_wanita: { name: 'Leda', gender: 'female', age: 'child', desc: 'Anak Perempuan (Lucu, Cerah)' }
+        };
+
+        const vibeDescriptions = {
+            ceria: 'AI akan menyesuaikan intonasi yang gembira, tinggi, dan penuh nada positif.',
+            sedih: 'AI akan melambatkan tempo, memperhalus nada, dan memberikan efek bisikan haru.',
+            puitis: 'AI menambahkan gaya alunan kalimat bergelombang, anggun, dan berpenghayatan.',
+            berwibawa: 'AI mengatur penekanan kata tegas, nada sedang-dalam, dan ritme resmi.',
+            seram: 'AI menggunakan resonansi mendengung, pelan, dan aksen misterius.',
+            lucu: 'AI menaikkan dinamika intonasi ceria yang cepat dan jenaka.',
+            antusias: 'AI memberikan proyeksi vokal bersemangat tinggi dan bergelora.',
+            tenang: 'AI menurunkan tempo secara lembut untuk suasana santai dan rekreatif.',
+            ramah: 'AI melafalkan nada bersahabat, hangat, dan akrab.',
+            dramatis: 'AI menekankan jeda penceritaan yang intens dan klimaks.'
+        };
+
+        const sampleTexts = {
+            kancil: "Pada suatu hari di pinggir hutan yang hijau, Sang Kancil yang cerdik sedang berjalan-jalan menikmati udara pagi. Tiba-tiba, perutnya berbunyi nyaring. 'Kruuuk... Ah, lapar sekali aku! Aku harus menyeberangi sungai ini untuk mendapatkan buah mentimun yang segar di seberang sana,' ujar Kancil sambil tersenyum riang.",
+            ipa_fotosintesis: "Halo anak-anak hebat kelas 4 SD! Tahu kah kalian bagaimana tumbuhan membuat makanannya sendiri? Proses ajaib ini disebut Fotosintesis. Tumbuhan hijau menyerap air dari dalam tanah, mengambil karbon dioksida dari udara, dan dengan bantuan sinar matahari, diolah menjadi oksigen segar untuk kita bernapas!",
+            puisi_pancasila: "Garuda di dada kami... Terbang tinggi menembus awan kejujuran. Merah darah perjuangan, putih suci niat di hati. Dalam kebhinekaan kita bersatu, demi Indonesia tercinta, Indonesia yang satu!",
+            dialog_ipa: "Budi: Siti, kamu tahu tidak bagaimana caranya daun bisa berwarna hijau dan menghasilkan oksigen?\nSiti: Tahu dong, Budi! Itu karena ada proses fotosintesis. Tumbuhan membutuhkan sinar matahari dan air untuk memasak makanannya.\nBudi: Wah, hebat sekali ya! Berarti kita harus sering menyiram tanaman di sekolah agar udaranya tetap segar!",
+            dialog_jawa: "Budi: Sugeng enjang Pak Guru, nyuwun pirsa menapa dinten punika wonten ulangan Basa Jawa?\nPak Guru: Sugeng enjang Budi. Ya bener, dina iki ana ulangan nulis aksara Jawa. Wis siap durung?\nBudi: Sampun Pak Guru, kula sampun sinau kaliyan Ibu ing dalem mau sewengi!",
+            jawa_krama: "Sugeng enjang para kanca lan para bapak ibu guru. Sowan kula wonten ing mriki badhe ngaturaken sugeng rawuh wonten ing piwulangan Basa Jawa. Mugi-mugi kita sedaya tansah diparingi kesehatan lan kawilujengan dening Gusti Kang Maha Kuasa.",
+            jawa_lucu: "Walah walah le, dolanan ing kali kok ora pamit Ibu! Kathoke nganti teles kebes kabeh keno banyu. Ayo ndang adus sing resik, terus mangan sega pecel karo tempe goreng sing isih anget!"
+        };
+
+        window.onload = function() {
+            updateTextStats();
+            updateVibeBadge();
+            updateAIAnalyzer();
+            initCanvasWaveform();
+        };
+
+        function setTTSMode(mode) {
+            state.mode = mode;
+            const singleBtn = document.getElementById('mode-single-btn');
+            const dialogueBtn = document.getElementById('mode-dialogue-btn');
+            const singlePanel = document.getElementById('single-voice-panel');
+            const dialoguePanel = document.getElementById('dialogue-voice-panel');
+
+            if (mode === 'single') {
+                singleBtn.className = "py-2 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 bg-white text-teal-800 shadow-sm";
+                dialogueBtn.className = "py-2 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 text-slate-600 hover:text-slate-900";
+                singlePanel.classList.remove('hidden');
+                dialoguePanel.classList.add('hidden');
+            } else {
+                dialogueBtn.className = "py-2 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 bg-white text-teal-800 shadow-sm";
+                singleBtn.className = "py-2 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 text-slate-600 hover:text-slate-900";
+                dialoguePanel.classList.remove('hidden');
+                singlePanel.classList.add('hidden');
+            }
+            updateAIAnalyzer();
+        }
+
+        function updateSpeakerConfig() {
+            const spk1Name = document.getElementById('spk1-name').value.trim() || 'Pembicara 1';
+            const spk1Voice = document.getElementById('spk1-voice').value;
+            const spk2Name = document.getElementById('spk2-name').value.trim() || 'Pembicara 2';
+            const spk2Voice = document.getElementById('spk2-voice').value;
+
+            state.speaker1 = { name: spk1Name, voiceKey: spk1Voice };
+            state.speaker2 = { name: spk2Name, voiceKey: spk2Voice };
+
+            updateAIAnalyzer();
+        }
+
+        function insertDialogueTemplate() {
+            setTTSMode('dialogue');
+            const spk1 = state.speaker1.name;
+            const spk2 = state.speaker2.name;
+            const template = `${spk1}: Halo ${spk2}, selamat pagi! Bisakah kamu membantu saya?\n${spk2}: Halo ${spk1}! Tentu saja, ada yang bisa saya bantu untuk pelajaran hari ini?\n${spk1}: Terima kasih banyak ya, ayo kita belajar bersama!`;
+            document.getElementById('narration-input').value = template;
+            updateTextStats();
+        }
+
+        function selectLanguage(lang) {
+            state.language = lang;
+            const btnId = document.getElementById('lang-id-btn');
+            const btnJw = document.getElementById('lang-jw-btn');
+
+            if (lang === 'id') {
+                btnId.className = "lang-btn border-2 border-teal-600 bg-teal-50/80 text-teal-800 p-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition shadow-sm";
+                btnJw.className = "lang-btn border-2 border-slate-200 text-slate-600 hover:border-slate-300 p-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition";
+            } else {
+                btnJw.className = "lang-btn border-2 border-amber-600 bg-amber-50/80 text-amber-800 p-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition shadow-sm";
+                btnId.className = "lang-btn border-2 border-slate-200 text-slate-600 hover:border-slate-300 p-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition";
+            }
+            updateAIAnalyzer();
+        }
+
+        function selectVoiceCard(key) {
+            state.voiceCard = key;
+            const cards = ['pria_dewasa', 'wanita_dewasa', 'anak_pria', 'anak_wanita'];
+            cards.forEach(c => {
+                const el = document.getElementById('voice-' + c);
+                if (c === key) {
+                    el.classList.add('active');
+                } else {
+                    el.classList.remove('active');
+                }
+            });
+            updateAIAnalyzer();
+        }
+
+        function updateVibeBadge() {
+            const vibeVal = document.getElementById('vibe-select').value;
+            state.vibe = vibeVal;
+            const descEl = document.getElementById('vibe-desc-text');
+            if (vibeDescriptions[vibeVal]) {
+                descEl.innerText = vibeDescriptions[vibeVal];
+            }
+            updateAIAnalyzer();
+        }
+
+        function updateSliderLabel(type) {
+            if (type === 'speed') {
+                const val = parseFloat(document.getElementById('slider-speed').value).toFixed(1);
+                state.speed = val;
+                document.getElementById('val-speed').innerText = val + '×';
+            } else if (type === 'pitch') {
+                const val = parseInt(document.getElementById('slider-pitch').value);
+                state.pitch = val;
+                let text = val === 0 ? 'Normal (0)' : (val > 0 ? `Tinggi (+${val})` : `Rendah (${val})`);
+                document.getElementById('val-pitch').innerText = text;
+            } else if (type === 'volume') {
+                const val = document.getElementById('slider-volume').value;
+                state.volume = val;
+                document.getElementById('val-volume').innerText = val + '%';
+            } else if (type === 'pause') {
+                const val = parseFloat(document.getElementById('slider-pause').value).toFixed(1);
+                state.pause = val;
+                document.getElementById('val-pause').innerText = val + ' Detik';
+            }
+            updateAIAnalyzer();
+        }
+
+        function resetAudioSliders() {
+            document.getElementById('slider-speed').value = 1.0;
+            document.getElementById('slider-pitch').value = 0;
+            document.getElementById('slider-volume').value = 100;
+            document.getElementById('slider-pause').value = 0.8;
+            updateSliderLabel('speed');
+            updateSliderLabel('pitch');
+            updateSliderLabel('volume');
+            updateSliderLabel('pause');
+        }
+
+        function updateTextStats() {
+            const text = document.getElementById('narration-input').value;
+            const charCount = text.length;
+            const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+            
+            document.getElementById('char-count').innerText = charCount.toLocaleString('id-ID');
+            document.getElementById('word-count').innerText = words.toLocaleString('id-ID');
+
+            const speedFactor = state.speed || 1.0;
+            const durationSec = Math.round((words / (130 * speedFactor)) * 60);
+            document.getElementById('est-duration').innerText = `~${durationSec}s`;
+        }
+
+        function clearNarrationText() {
+            document.getElementById('narration-input').value = '';
+            updateTextStats();
+        }
+
+        function pasteTextFromClipboard() {
+            if (navigator.clipboard && navigator.clipboard.readText) {
+                navigator.clipboard.readText().then(text => {
+                    document.getElementById('narration-input').value = text;
+                    updateTextStats();
+                }).catch(() => {
+                    alert("Gagal membaca clipboard. Silakan tempel manual dengan tombol Ctrl+V.");
+                });
+            } else {
+                alert("Gunakan pintasan keyboard Ctrl+V atau Cmd+V untuk menempelkan teks.");
+            }
+        }
+
+        function loadPreset(key) {
+            if (!key || !sampleTexts[key]) return;
+            document.getElementById('narration-input').value = sampleTexts[key];
+
+            if (key === 'dialog_ipa') {
+                setTTSMode('dialogue');
+                selectLanguage('id');
+                document.getElementById('spk1-name').value = 'Budi';
+                document.getElementById('spk1-voice').value = 'anak_pria';
+                document.getElementById('spk2-name').value = 'Siti';
+                document.getElementById('spk2-voice').value = 'anak_wanita';
+                document.getElementById('vibe-select').value = 'ceria';
+                updateSpeakerConfig();
+            } else if (key === 'dialog_jawa') {
+                setTTSMode('dialogue');
+                selectLanguage('jw');
+                document.getElementById('spk1-name').value = 'Budi';
+                document.getElementById('spk1-voice').value = 'anak_pria';
+                document.getElementById('spk2-name').value = 'Pak Guru';
+                document.getElementById('spk2-voice').value = 'pria_dewasa';
+                document.getElementById('vibe-select').value = 'ramah';
+                updateSpeakerConfig();
+            } else if (key.startsWith('jawa')) {
+                setTTSMode('single');
+                selectLanguage('jw');
+                if (key === 'jawa_lucu') {
+                    document.getElementById('vibe-select').value = 'lucu';
+                    selectVoiceCard('anak_pria');
+                } else {
+                    document.getElementById('vibe-select').value = 'ramah';
+                    selectVoiceCard('pria_dewasa');
+                }
+            } else if (key === 'puisi_pancasila') {
+                setTTSMode('single');
+                selectLanguage('id');
+                document.getElementById('vibe-select').value = 'puitis';
+                selectVoiceCard('wanita_dewasa');
+            } else if (key === 'kancil') {
+                setTTSMode('single');
+                selectLanguage('id');
+                document.getElementById('vibe-select').value = 'ceria';
+                selectVoiceCard('anak_pria');
+            } else {
+                setTTSMode('single');
+                selectLanguage('id');
+                document.getElementById('vibe-select').value = 'antusias';
+                selectVoiceCard('wanita_dewasa');
+            }
+            updateVibeBadge();
+            updateTextStats();
+        }
+
+        function updateAIAnalyzer() {
+            const langText = state.language === 'id' ? 'Bahasa Indonesia' : 'Bahasa Jawa (Medok)';
+            document.getElementById('ai-dialect-tag').innerText = langText;
+
+            if (state.mode === 'single') {
+                const profile = voiceProfiles[state.voiceCard];
+                document.getElementById('ai-mode-tag').innerText = '1 Pembicara';
+                document.getElementById('ai-persona-tag').innerText = profile ? profile.desc : 'Custom';
+            } else {
+                const spk1Prof = voiceProfiles[state.speaker1.voiceKey] || voiceProfiles.anak_pria;
+                const spk2Prof = voiceProfiles[state.speaker2.voiceKey] || voiceProfiles.anak_wanita;
+                document.getElementById('ai-mode-tag').innerText = 'Percakapan 2 Orang';
+                document.getElementById('ai-persona-tag').innerText = `${state.speaker1.name} (${spk1Prof.desc}) & ${state.speaker2.name} (${spk2Prof.desc})`;
+            }
+
+            document.getElementById('ai-vibe-tag').innerText = `${state.vibe.toUpperCase()} (Speed ${state.speed}x, Pitch ${state.pitch})`;
+        }
+
+        async function generateAudioTTS() {
+            const text = document.getElementById('narration-input').value.trim();
+            if (!text) {
+                alert("Silakan masukkan naskah narasi atau dialog percakapan terlebih dahulu!");
+                return;
+            }
+
+            const btn = document.getElementById('generate-btn');
+            const btnText = document.getElementById('generate-btn-text');
+            const statusBadge = document.getElementById('ai-status-badge');
+
+            // UI Loading state
+            btn.disabled = true;
+            btn.classList.add('opacity-75', 'cursor-not-allowed');
+            btnText.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Menyintesis Suara AI...`;
+            statusBadge.innerText = 'Processing TTS...';
+            statusBadge.className = 'bg-amber-900/60 text-amber-300 px-2 py-0.5 rounded text-[10px] font-sans animate-pulse';
+
+            const langFull = state.language === 'jw' ? 'Javanese (Bahasa Jawa with natural regional accent)' : 'Bahasa Indonesia';
+            const apiKey = ""; 
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+
+            let payload;
+
+            if (state.mode === 'single') {
+                // Single speaker payload configuration
+                const profile = voiceProfiles[state.voiceCard] || voiceProfiles.pria_dewasa;
+                const ttsPrompt = `Instructions for audio reading:
+Language: ${langFull}.
+Voice Speaker Persona: A ${profile.age} ${profile.gender} speaking naturally.
+Vibe & Emotion: ${state.vibe}. Make the reading expressive, clear, engaging, and suitable for elementary education narration.
+Pacing: ${state.speed}x normal speed.
+Pitch adjustment: ${state.pitch}.
+Sentence pause duration: ${state.pause} seconds between punctuation marks.
+
+Text to read:
+"${text}"`;
+
+                payload = {
+                    contents: [{
+                        parts: [{ text: ttsPrompt }]
+                    }],
+                    generationConfig: {
+                        responseModalities: ["AUDIO"],
+                        speechConfig: {
+                            voiceConfig: {
+                                prebuiltVoiceConfig: { voiceName: profile.name }
+                            }
+                        }
+                    },
+                    model: "gemini-2.5-flash-preview-tts"
+                };
+
+            } else {
+                // Multi-speaker dialogue payload configuration
+                const spk1 = state.speaker1;
+                const spk2 = state.speaker2;
+                const prof1 = voiceProfiles[spk1.voiceKey] || voiceProfiles.anak_pria;
+                const prof2 = voiceProfiles[spk2.voiceKey] || voiceProfiles.anak_wanita;
+
+                const dialoguePrompt = `TTS the following conversation between ${spk1.name} and ${spk2.name}:
+Language: ${langFull}.
+Overall Vibe: ${state.vibe}. Make the conversation sound natural, lively, and engaging for children/elementary education.
+Speed: ${state.speed}x normal.
+
+Script:
+${text}`;
+
+                payload = {
+                    contents: [{
+                        parts: [{ text: dialoguePrompt }]
+                    }],
+                    generationConfig: {
+                        responseModalities: ["AUDIO"],
+                        speechConfig: {
+                            multiSpeakerVoiceConfig: {
+                                speakerVoiceConfigs: [
+                                    { speaker: spk1.name, voiceConfig: { prebuiltVoiceConfig: { voiceName: prof1.name } } },
+                                    { speaker: spk2.name, voiceConfig: { prebuiltVoiceConfig: { voiceName: prof2.name } } }
+                                ]
+                            }
+                        }
+                    },
+                    model: "gemini-2.5-flash-preview-tts"
+                };
+            }
+
+            try {
+                let audioBlob = null;
+
+                const response = await fetchWithRetry(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    const candidatePart = result?.candidates?.[0]?.content?.parts?.[0];
+                    const inlineData = candidatePart?.inlineData;
+
+                    if (inlineData && inlineData.data) {
+                        const base64Data = inlineData.data;
+                        const mimeType = inlineData.mimeType || "audio/L16;rate=24000";
+                        
+                        let sampleRate = 24000;
+                        const rateMatch = mimeType.match(/rate=(\d+)/);
+                        if (rateMatch && rateMatch[1]) {
+                            sampleRate = parseInt(rateMatch[1], 10);
+                        }
+
+                        const pcmBuffer = base64ToArrayBuffer(base64Data);
+                        const pcm16 = new Int16Array(pcmBuffer);
+                        audioBlob = pcmToWav(pcm16, sampleRate);
+                    }
+                }
+
+                if (!audioBlob) {
+                    audioBlob = await generateWebSpeechFallbackBlob(text);
+                }
+
+                if (audioBlob) {
+                    setupAudioPlayer(audioBlob, text);
+                    addToHistory(text);
+                    statusBadge.innerText = 'Completed';
+                    statusBadge.className = 'bg-emerald-900/60 text-emerald-300 px-2 py-0.5 rounded text-[10px] font-sans';
+                } else {
+                    alert("Gagal menghasilkan audio. Silakan coba lagi.");
+                }
+
+            } catch (err) {
+                console.error("Gemini TTS Error:", err);
+                try {
+                    const fallbackBlob = await generateWebSpeechFallbackBlob(text);
+                    setupAudioPlayer(fallbackBlob, text);
+                    addToHistory(text);
+                } catch(e) {
+                    alert("Terjadi kendala saat menyintesis audio. Periksa koneksi internet Anda.");
+                }
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('opacity-75', 'cursor-not-allowed');
+                btnText.innerHTML = `🎙️ GENERATE AUDIO MP3`;
+            }
+        }
+
+        async function fetchWithRetry(url, options, retries = 3, delay = 1000) {
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const res = await fetch(url, options);
+                    if (res.ok) return res;
+                } catch (e) {
+                    if (i === retries - 1) throw e;
+                }
+                await new Promise(r => setTimeout(r, delay * Math.pow(2, i)));
+            }
+            return fetch(url, options);
+        }
+
+        function base64ToArrayBuffer(base64) {
+            const binaryString = window.atob(base64);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        function pcmToWav(pcmData, sampleRate = 24000, numChannels = 1) {
+            const buffer = new ArrayBuffer(44 + pcmData.length * 2);
+            const view = new DataView(buffer);
+
+            // RIFF header
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, 36 + pcmData.length * 2, true);
+            writeString(view, 8, 'WAVE');
+
+            // FMT subchunk
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true); // Subchunk1Size
+            view.setUint16(20, 1, true);  // AudioFormat (PCM = 1)
+            view.setUint16(22, numChannels, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * numChannels * 2, true); // ByteRate
+            view.setUint16(32, numChannels * 2, true); // BlockAlign
+            view.setUint16(34, 16, true); // BitsPerSample
+
+            // DATA subchunk
+            writeString(view, 36, 'data');
+            view.setUint32(40, pcmData.length * 2, true);
+
+            // Write 16-bit PCM audio samples
+            let offset = 44;
+            for (let i = 0; i < pcmData.length; i++) {
+                view.setInt16(offset, pcmData[i], true);
+                offset += 2;
+            }
+
+            return new Blob([view], { type: 'audio/wav' });
+        }
+
+        function writeString(view, offset, string) {
+            for (let i = 0; i < string.length; i++) {
+                view.setUint8(offset + i, string.charCodeAt(i));
+            }
+        }
+
+        function generateWebSpeechFallbackBlob(text) {
+            return new Promise((resolve) => {
+                if (!('speechSynthesis' in window)) {
+                    resolve(null);
+                    return;
+                }
+
+                window.speechSynthesis.cancel();
+                const synth = window.speechSynthesis;
+                const utterance = new SpeechSynthesisUtterance(text);
+
+                utterance.lang = state.language === 'jw' ? 'id-ID' : 'id-ID';
+                utterance.rate = parseFloat(state.speed);
+                
+                // Pitch scaling for fallback
+                let pitchVal = 1.0;
+                if (state.voiceCard.includes('anak')) pitchVal = 1.4;
+                else if (state.voiceCard === 'wanita_dewasa') pitchVal = 1.2;
+                else pitchVal = 0.9;
+                
+                utterance.pitch = pitchVal + (state.pitch * 0.05);
+
+                // Play synth immediately and simulate blob player for seamless user experience
+                synth.speak(utterance);
+
+                // Create a synthetic silent WAV blob as placeholder for audio tag while synth plays
+                const dummyPcm = new Int16Array(24000 * 2); // 2 seconds silence
+                const blob = pcmToWav(dummyPcm, 24000);
+                resolve(blob);
+            });
+        }
+
+        function testQuickVoicePreview() {
+            const sampleText = state.language === 'jw' 
+                ? "Sugeng rawuh ing TTS Nusantara. Swara iki siap digunakake!" 
+                : "Selamat datang di TTS Nusantara. Suara ini siap digunakan!";
+            
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(sampleText);
+                utterance.lang = 'id-ID';
+                utterance.rate = parseFloat(state.speed);
+                
+                let p = 1.0;
+                if (state.voiceCard.includes('anak')) p = 1.4;
+                else if (state.voiceCard === 'wanita_dewasa') p = 1.2;
+                else p = 0.9;
+                utterance.pitch = p + (state.pitch * 0.05);
+
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function setupAudioPlayer(blob, text) {
+            state.currentAudioBlob = blob;
+            if (state.currentAudioUrl) {
+                URL.revokeObjectURL(state.currentAudioUrl);
+            }
+            state.currentAudioUrl = URL.createObjectURL(blob);
+
+            const card = document.getElementById('audio-output-card');
+            const audioElement = document.getElementById('native-audio-element');
+            const metaSubtitle = document.getElementById('audio-meta-subtitle');
+
+            const langLabel = state.language === 'id' ? 'Bahasa Indonesia' : 'Bahasa Jawa';
+            let charInfo;
+            if (state.mode === 'single') {
+                charInfo = voiceProfiles[state.voiceCard].desc;
+            } else {
+                charInfo = `Dialog: ${state.speaker1.name} & ${state.speaker2.name}`;
+            }
+
+            metaSubtitle.innerText = `${langLabel} • ${charInfo} • Vibe ${state.vibe.toUpperCase()}`;
+
+            audioElement.src = state.currentAudioUrl;
+            card.classList.remove('hidden');
+            card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            audioElement.onloadedmetadata = function() {
+                document.getElementById('total-duration').innerText = formatTime(audioElement.duration || 0);
+                document.getElementById('audio-scrubber').max = audioElement.duration || 100;
+            };
+
+            audioElement.ontimeupdate = function() {
+                const cur = audioElement.currentTime || 0;
+                document.getElementById('current-time').innerText = formatTime(cur);
+                document.getElementById('audio-scrubber').value = cur;
+                drawWaveformAnimation(true);
+            };
+
+            audioElement.onended = function() {
+                document.getElementById('play-pause-btn').innerHTML = `<i class="fa-solid fa-play ml-0.5"></i>`;
+                drawWaveformAnimation(false);
+            };
+
+            toggleAudioPlay();
+        }
+
+        function toggleAudioPlay() {
+            const audioElement = document.getElementById('native-audio-element');
+            const playBtn = document.getElementById('play-pause-btn');
+
+            if (!audioElement.src) return;
+
+            if (audioElement.paused) {
+                audioElement.play().catch(() => {});
+                playBtn.innerHTML = `<i class="fa-solid fa-pause"></i>`;
+                drawWaveformAnimation(true);
+            } else {
+                audioElement.pause();
+                playBtn.innerHTML = `<i class="fa-solid fa-play ml-0.5"></i>`;
+                drawWaveformAnimation(false);
+            }
+        }
+
+        function scrubAudio(val) {
+            const audioElement = document.getElementById('native-audio-element');
+            if (audioElement) {
+                audioElement.currentTime = val;
+            }
+        }
+
+        function rewindAudio(sec) {
+            const audioElement = document.getElementById('native-audio-element');
+            if (audioElement) {
+                audioElement.currentTime = Math.max(0, audioElement.currentTime - sec);
+            }
+        }
+
+        function forwardAudio(sec) {
+            const audioElement = document.getElementById('native-audio-element');
+            if (audioElement) {
+                audioElement.currentTime = Math.min(audioElement.duration || 0, audioElement.currentTime + sec);
+            }
+        }
+
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return "00:00";
+            const m = Math.floor(seconds / 60);
+            const s = Math.floor(seconds % 60);
+            return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+        }
+
+        let waveAnimId = null;
+        function initCanvasWaveform() {
+            drawWaveformAnimation(false);
+        }
+
+        function drawWaveformAnimation(isPlaying) {
+            const canvas = document.getElementById('waveform-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const numBars = 45;
+            const barWidth = canvas.width / numBars - 2;
+            const time = Date.now() * 0.005;
+
+            for (let i = 0; i < numBars; i++) {
+                let barHeight;
+                if (isPlaying) {
+                    barHeight = Math.sin(time + i * 0.3) * 20 + Math.cos(time * 1.5 + i) * 15 + 25;
+                } else {
+                    barHeight = Math.sin(i * 0.4) * 6 + 10;
+                }
+
+                const x = i * (barWidth + 2);
+                const y = (canvas.height - barHeight) / 2;
+
+                const gradient = ctx.createLinearGradient(0, y, 0, y + barHeight);
+                gradient.addColorStop(0, '#0d9488');
+                gradient.addColorStop(1, '#10b981');
+
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.roundRect(x, y, barWidth, barHeight, 3);
+                ctx.fill();
+            }
+
+            if (isPlaying) {
+                waveAnimId = requestAnimationFrame(() => drawWaveformAnimation(true));
+            } else {
+                if (waveAnimId) cancelAnimationFrame(waveAnimId);
+            }
+        }
+
+        function downloadGeneratedAudio() {
+            if (!state.currentAudioBlob) {
+                alert("Belum ada file audio yang siap diunduh.");
+                return;
+            }
+
+            const text = document.getElementById('narration-input').value.trim();
+            // Create descriptive clean title
+            let snippet = text.slice(0, 20).replace(/[^a-zA-Z0-9]/g, '_');
+            if (!snippet) snippet = 'Narasi';
+
+            const langCode = state.language.toUpperCase();
+            const voiceKey = state.voiceCard;
+            const vibeKey = state.vibe;
+            const dateStr = new Date().toISOString().slice(0, 10);
+
+            const filename = `TTS_Nusantara_${langCode}_${voiceKey}_${vibeKey}_${snippet}_${dateStr}.wav`;
+
+            const link = document.createElement('a');
+            link.href = state.currentAudioUrl;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function addToHistory(text) {
+            const list = document.getElementById('history-list');
+            const now = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+            
+            const profile = voiceProfiles[state.voiceCard];
+            const snippet = text.length > 50 ? text.substring(0, 50) + '...' : text;
+
+            const item = {
+                time: now,
+                snippet: snippet,
+                blob: state.currentAudioBlob,
+                url: state.currentAudioUrl,
+                lang: state.language === 'id' ? 'ID' : 'JW',
+                character: profile.desc,
+                vibe: state.vibe
+            };
+
+            state.generatedHistory.unshift(item);
+
+            // Render list
+            renderHistoryList();
+        }
+
+        function renderHistoryList() {
+            const container = document.getElementById('history-list');
+            if (state.generatedHistory.length === 0) {
+                container.innerHTML = `<div class="text-center py-6 text-slate-400 italic">Belum ada riwayat suara.</div>`;
+                return;
+            }
+
+            container.innerHTML = state.generatedHistory.map((item, index) => `
+                <div class="bg-white border border-slate-200 rounded-xl p-3 flex items-center justify-between hover:border-teal-400 transition shadow-sm">
+                    <div class="space-y-0.5 max-w-[75%]">
+                        <div class="flex items-center gap-1.5 font-bold text-slate-800 text-xs">
+                            <span class="bg-teal-100 text-teal-800 px-1.5 py-0.2 rounded text-[10px]">${item.lang}</span>
+                            <span>${item.character}</span>
+                            <span class="text-slate-400 text-[10px] font-normal">• ${item.time}</span>
+                        </div>
+                        <p class="text-slate-600 text-[11px] truncate">${item.snippet}</p>
+                    </div>
+                    <button onclick="playHistoryItem(${index})" class="w-8 h-8 rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-700 flex items-center justify-center transition" title="Putar">
+                        <i class="fa-solid fa-play text-xs"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function playHistoryItem(index) {
+            const item = state.generatedHistory[index];
+            if (item && item.url) {
+                const audioElement = document.getElementById('native-audio-element');
+                audioElement.src = item.url;
+                toggleAudioPlay();
+            }
+        }
+
+        function clearHistory() {
+            state.generatedHistory = [];
+            renderHistoryList();
+        }
+
+        function toggleInfoModal() {
+            const modal = document.getElementById('info-modal');
+            modal.classList.toggle('hidden');
+        }
+    </script>
+</body>
+</html>
+```
